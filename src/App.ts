@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import Fastify, { FastifyListenOptions } from 'fastify';
 import fastifyCors from '@fastify/cors';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyFormbody from '@fastify/formbody';
@@ -22,7 +22,12 @@ const startServer = async () => {
 
   // Run the server!
   try {
-    await App.listen({ port: Environment.Api.port });
+    const options: FastifyListenOptions = {
+      host: Environment.Api.host,
+      port: Environment.Api.port,
+    };
+
+    await App.listen(options);
   } catch (err) {
     App.log.error(err);
     process.exit(1);
