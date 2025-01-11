@@ -1,0 +1,1613 @@
+openapi: 3.0.3
+info:
+  title: Task Management System API
+  description: |
+    This is the API documentation for the Task Management System, which supports managing users, organizations, projects, tasks, and their relationships.
+  version: 1.0.0
+
+tags:
+  - name: Organization
+    description: Organization related operations
+  - name: User
+    description: User related operations
+  - name: Project
+    description: Project related operations
+  - name: Task
+    description: Task related operations
+
+paths:
+  /organizations:
+    post:
+      tags:
+        - Organization
+      summary: Create a new organization
+      operationId: createOrganization
+      requestBody:
+        description: Details of the organization to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/Organization/Create'
+      responses:
+        '201':
+          description: Organization created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Organization/One'
+  /organizations/{org_id}:
+    get:
+      tags:
+        - Organization
+      summary: Get organization details
+      operationId: getOrganizationById
+      parameters:
+        - name: org_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Organization details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Organization/One'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+    delete:
+      tags:
+        - Organization
+      summary: Delete an organization
+      operationId: deleteOrganization
+      parameters:
+        - name: org_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Organization deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Empty'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /organizations/{org_id}/users:
+    get:
+      tags:
+        - Organization
+      summary: Get users in an organization
+      operationId: getUsersInOrganization
+      parameters:
+        - name: org_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Users retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/User/List'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /organizations/{org_id}/users/invite:
+    post:
+      tags:
+        - Organization
+      summary: Invite a user to an organization
+      operationId: inviteUserToOrganization
+      parameters:
+        - name: org_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details for inviting a user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/Organization/InviteUser'
+      responses:
+        '200':
+          description: User invited successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Empty'
+        '400':
+          description: Invalid email
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/BadRequest'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /organizations/{org_id}/projects:
+    get:
+      tags:
+        - Organization
+      summary: Get projects in an organization
+      operationId: getProjectsInOrganization
+      parameters:
+        - name: org_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Projects retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Organization/Projects'
+        '404':
+          description: Organization not found
+
+  /users/me:
+    get:
+      tags:
+        - User
+      summary: Get current user details
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/User/Current'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+  /users/{user_id}:
+    get:
+      tags:
+        - User
+      summary: Get user details
+      operationId: getUserById
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/User/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+    delete:
+      tags:
+        - User
+      summary: Delete a user
+      operationId: deleteUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Empty'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+
+  /projects/{project_id}:
+    get:
+      tags:
+        - Project
+      summary: Get project details
+      operationId: getProjectById
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Project details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Project/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+    delete:
+      tags:
+        - Project
+      summary: Delete a project
+      operationId: deleteProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Project deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Empty'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /projects/{project_id}/users:
+    get:
+      tags:
+        - Project
+      summary: Get users in a project
+      operationId: getUsersInProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/responses/schemas/success/User/List'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+    post:
+      tags:
+        - Project
+      summary: Add a user to a project
+      operationId: addUserToProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details for adding a user to a project
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/Project/AddUser'
+      responses:
+        '200':
+          description: User added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Empty'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Project or user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /projects/{project_id}/task-statuses:
+    get:
+      tags:
+        - Project
+      summary: Get task statuses in a project
+      operationId: getTaskStatusesInProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task statuses retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/ProjectStatus/List'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+    post:
+      tags:
+        - Project
+      summary: Create a new task status in a project
+      operationId: createTaskStatusInProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details of the task status to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/Project/TaskStatus/Create'
+      responses:
+        '201':
+          description: Task status created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/ProjectStatus/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /projects/{project_id}/task-statuses/{task_status_id}:
+    put:
+      tags:
+        - Project
+      summary: Update a task status in a project
+      operationId: updateTaskStatusInProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: task_status_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details of the task status to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/Project/TaskStatus/Edit'
+      responses:
+        '200':
+          description: Task status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/ProjectStatus/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Project or task status not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /projects/{project_id}/tasks:
+    get:
+      tags:
+        - Project
+      summary: Get tasks in a project
+      operationId: getTasksInProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: user_id
+          in: query
+          schema:
+            type: string
+        - name: skip
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Task/List'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Project or task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+    post:
+      tags:
+        - Project
+      summary: Create a new task in a project
+      operationId: createTaskInProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details of the task to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/Project/Task/Create'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Task/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Project or task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+
+  /tasks/{task_id}:
+    get:
+      tags:
+        - Task
+      summary: Get task details
+      operationId: getTaskById
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Task/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+    put:
+      tags:
+        - Task
+      summary: Update a task
+      operationId: updateTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details of the task to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/Task/Update'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Task/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+    delete:
+      tags:
+        - Task
+      summary: Delete a task
+      operationId: deleteTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Empty'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /tasks/{task_id}/assign:
+    put:
+      tags:
+        - Task
+      summary: Assign a user to a task
+      operationId: assignUserToTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details for assigning a user to a task
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/Task/Assign'
+      responses:
+        '200':
+          description: User assigned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Task/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /tasks/{task_id}/subtasks:
+    get:
+      tags:
+        - Task
+      summary: Get subtasks of a task
+      operationId: getSubtasksOfTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Subtasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/responses/schemas/success/SubTask/List'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+    post:
+      tags:
+        - Task
+      summary: Create a new subtask for a task
+      operationId: createSubtaskForTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details of the subtask to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/SubTask/Create'
+      responses:
+        '201':
+          description: SubTask created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/SubTask/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /tasks/{task_id}/comments:
+    get:
+      tags:
+        - Task
+      summary: Get comments on a task
+      operationId: getCommentsOnTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Comments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/responses/schemas/success/Comment/List'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+    post:
+      tags:
+        - Task
+      summary: Add a comment to a task
+      operationId: addCommentToTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details of the comment to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/Comment/Create'
+      responses:
+        '201':
+          description: Comment added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Comment/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+  /tasks/{task_id}/comments/{comment_id}:
+    put:
+      tags:
+        - Task
+      summary: Update a comment on a task
+      operationId: updateCommentOnTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: comment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details of the comment to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/requests/schemas/Comment/Update'
+      responses:
+        '200':
+          description: Comment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Comment/One'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Task or comment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+    delete:
+      tags:
+        - Task
+      summary: Delete a comment on a task
+      operationId: deleteCommentOnTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: comment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Comment deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/success/Empty'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Unauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/Forbidden'
+        '404':
+          description: Task or comment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
+
+requests:
+  schemas:
+    Organization:
+      Create:
+        allOf:
+          - $ref: '#/components/schemas/Organization'
+          - type: object
+            properties:
+              id:
+                nullable: true
+                readOnly: true
+              users:
+                nullable: true
+                readOnly: true
+              owner:
+                allOf:
+                  - $ref: '#/components/schemas/User'
+                  - type: object
+                properties:
+                  id:
+                    nullable: true
+                    readOnly: true
+                  organizations:
+                    nullable: true
+                    readOnly: true
+            required:
+              - name
+      InviteUser:
+        type: object
+        properties:
+          email:
+            type: string
+            format: email
+            example: john@doe.com
+    User:
+      Create:
+        allOf:
+          - $ref: '#/components/schemas/User'
+          - type: object
+            properties:
+              id:
+                nullable: true
+                readOnly: true
+            required:
+              - name
+    Project:
+      AddUser:
+        type: object
+        properties:
+          user_id:
+            type: string
+            example: 122
+      TaskStatus:
+        Create:
+          # Extend from TaskStatus and remove id property
+          allOf:
+            - $ref: '#/components/schemas/TaskStatus'
+            - type: object
+              properties:
+                id:
+                  nullable: true
+                  readOnly: true
+        Edit:
+          # Extend from TaskStatus and remove id property
+          allOf:
+            - $ref: '#/components/schemas/TaskStatus'
+            - type: object
+              properties:
+                id:
+                  nullable: true
+                  readOnly: true
+      Task:
+        Create:
+          # Extend from Task and remove id property
+          allOf:
+            - $ref: '#/components/schemas/Task'
+            - type: object
+              properties:
+                id:
+                  nullable: true
+                  readOnly: true
+                user:
+                  nullable: true
+                  readOnly: true
+                subtasks:
+                  nullable: true
+                  readOnly: true
+                comments:
+                  nullable: true
+                  readOnly: true
+                user_id:
+                  type: string
+    Task:
+      Update:
+        # Extend from Task and remove id property
+        allOf:
+          - $ref: '#/components/schemas/Task'
+          - type: object
+            properties:
+              id:
+                nullable: true
+                readOnly: true
+              user:
+                nullable: true
+                readOnly: true
+              subtasks:
+                nullable: true
+                readOnly: true
+              comments:
+                nullable: true
+                readOnly: true
+              user_id:
+                type: string
+      Assign:
+        type: object
+        properties:
+          user_id:
+            type: string
+            example: 122
+    SubTask:
+      Create:
+        # Extend from Task and remove id property
+        allOf:
+          - $ref: '#/components/schemas/SubTask'
+          - type: object
+            properties:
+              id:
+                nullable: true
+                readOnly: true
+              user:
+                nullable: true
+                readOnly: true
+              comments:
+                nullable: true
+                readOnly: true
+              user_id:
+                type: string
+    Comment:
+      Create:
+        type: object
+        properties:
+          content:
+            type: string
+            example: This is a comment
+      Update:
+        type: object
+        properties:
+          content:
+            type: string
+            example: This is an updated comment
+
+responses:
+  schemas:
+    error:
+      BadRequest:
+        type: object
+        properties:
+          success:
+            type: boolean
+            example: false
+          error:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+      NotFound:
+        type: object
+        properties:
+          success:
+            type: boolean
+            example: false
+          error:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Resource not found
+              code:
+                type: string
+                example: NOT_FOUND
+      Forbidden:
+        type: object
+        properties:
+          success:
+            type: boolean
+            example: false
+          error:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Forbidden
+              code:
+                type: string
+                example: FORBIDDEN
+      Unauthorized:
+        type: object
+        properties:
+          success:
+            type: boolean
+            example: false
+          error:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unauthorized
+              code:
+                type: string
+                example: UNAUTHORIZED
+    success:
+      Empty:
+        type: object
+        properties:
+          success:
+            type: boolean
+            example: true
+      Organization:
+        One:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              $ref: '#/components/schemas/Organization'
+        List:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              type: array
+              $ref: '#/components/schemas/Organization'
+
+        Users:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+
+        Projects:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              type: array
+              items:
+                $ref: '#/definitions/schemas/ProjectSummary'
+      User:
+        Current:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              $ref: '#/definitions/schemas/CurrentUser'
+        One:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              $ref: '#/components/schemas/User'
+        List:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+      Project:
+        One:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              $ref: '#/components/schemas/Project'
+      ProjectStatus:
+        List:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/TaskStatus'
+        One:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              $ref: '#/components/schemas/TaskStatus'
+      Task:
+        List:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              type: array
+              items:
+                $ref: '#/definitions/schemas/TaskSummary'
+        One:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              $ref: '#/components/schemas/Task'
+      SubTask:
+        List:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              type: array
+              items:
+                $ref: '#/definitions/schemas/SubtaskSummary'
+        One:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              $ref: '#/components/schemas/SubTask'
+      Comment:
+        List:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Comment'
+        One:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            data:
+              $ref: '#/components/schemas/Comment'
+
+definitions:
+  schemas:
+    OrganizationSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        unique_name:
+          type: string
+
+    ProjectSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+
+    CurrentUser:
+      type: object
+      properties:
+        user:
+          $ref: '#/definitions/schemas/UserSummary'
+        organizations:
+          type: array
+          items:
+            $ref: '#/definitions/schemas/OrganizationSummary'
+        projects:
+          type: array
+          items:
+            $ref: '#/definitions/schemas/ProjectSummary'
+
+    UserSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        avatar_uri:
+          type: string
+
+    TaskSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        user:
+          $ref: '#/definitions/schemas/UserSummary'
+        subtasks:
+          type: array
+          items:
+            $ref: '#/definitions/schemas/SubtaskSummary'
+
+    ParentTaskSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        user:
+          $ref: '#/definitions/schemas/UserSummary'
+
+    SubtaskSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        user:
+          $ref: '#/definitions/schemas/UserSummary'
+
+components:
+  schemas:
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        unique_name:
+          type: string
+        owner:
+          $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        avatar_uri:
+          type: string
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        organization:
+          $ref: '#/definitions/schemas/OrganizationSummary'
+
+    TaskStatus:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+        user:
+          $ref: '#/components/schemas/TaskUser'
+        subtasks:
+          type: array
+          items:
+            $ref: '#/definitions/schemas/SubtaskSummary'
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+
+    SubTask:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+        parent:
+          $ref: '#/definitions/schemas/ParentTaskSummary'
+        user:
+          $ref: '#/definitions/schemas/UserSummary'
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        user:
+          $ref: '#/definitions/schemas/UserSummary'
+        createdAt:
+          type: string
+          format: date-time
