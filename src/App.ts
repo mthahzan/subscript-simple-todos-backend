@@ -2,6 +2,7 @@ import Fastify, { FastifyListenOptions } from 'fastify';
 import fastifyCors from '@fastify/cors';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyFormbody from '@fastify/formbody';
+import Status from 'http-status';
 
 import './config';
 import Environment from './config/Environment';
@@ -20,11 +21,11 @@ const startServer = async () => {
   // Register error handler
   App.setNotFoundHandler((request, reply) => {
     reply
-      .code(404)
+      .code(Status.NOT_FOUND)
       .send(
         ResponseHelper.createErrorResponse(
           `${request.originalUrl} is not a valid route`,
-          '404',
+          'route_not_found',
         ),
       );
 
@@ -39,9 +40,12 @@ const startServer = async () => {
         .send(ResponseHelper.createErrorResponse(message, code));
     } else {
       reply
-        .code(500)
+        .code(Status.INTERNAL_SERVER_ERROR)
         .send(
-          ResponseHelper.createErrorResponse('Internal server error', '500'),
+          ResponseHelper.createErrorResponse(
+            'Internal server error',
+            'internal_server_error',
+          ),
         );
     }
 
