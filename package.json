@@ -14,12 +14,14 @@
   "devDependencies": {
     "@types/node": "^22.10.5",
     "fastify-tsconfig": "^2.0.0",
+    "joi": "^17.13.3",
     "prettier": "^3.4.2",
     "prisma": "^6.2.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.2.1"
+    "@prisma/client": "^6.2.1",
+    "dotenv": "^16.4.7"
   }
 }
