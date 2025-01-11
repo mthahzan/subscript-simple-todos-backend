@@ -90,6 +90,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@prisma/client@npm:^6.2.1":
+  version: 6.2.1
+  resolution: "@prisma/client@npm:6.2.1"
+  peerDependencies:
+    prisma: "*"
+  peerDependenciesMeta:
+    prisma:
+      optional: true
+  checksum: 10c0/d6313da2408f2034bfcda1fa3500e6e9fdf13b8ca68d0f31804d6e540e9fedfd4c556bd2258488e5928fa383e5e3a43aa6469c819f8f8bed6250ef983feee5f6
+  languageName: node
+  linkType: hard
+
 "@prisma/debug@npm:6.2.1":
   version: 6.2.1
   resolution: "@prisma/debug@npm:6.2.1"
@@ -857,6 +869,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "simple-todo-server@workspace:."
   dependencies:
+    "@prisma/client": "npm:^6.2.1"
     "@types/node": "npm:^22.10.5"
     fastify-tsconfig: "npm:^2.0.0"
     prettier: "npm:^3.4.2"
