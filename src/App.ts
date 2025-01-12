@@ -3,6 +3,7 @@ import Fastify, { FastifyListenOptions } from 'fastify';
 import './config';
 import Environment from './config/Environment';
 import Plugins from './plugins';
+import UserModule from './module/user';
 
 const options: FastifyListenOptions = {
   host: Environment.Api.host,
@@ -15,6 +16,9 @@ const startServer = async () => {
 
   // Attach plugins to the Fastify instance
   Plugins.attachPlugins(App);
+
+  // Attach the routes
+  UserModule.attachUserRoutes(App);
 
   // Declare a route
   App.get('/', async function handler(request, reply) {
