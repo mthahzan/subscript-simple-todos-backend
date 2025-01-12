@@ -42,7 +42,11 @@ export default class TaskRepository implements IDataRepository<TTask> {
   }
 
   getAll(): Promise<TTask[]> {
-    const results = this._prisma.task.findMany();
+    const results = this._prisma.task.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
 
     return results;
   }
