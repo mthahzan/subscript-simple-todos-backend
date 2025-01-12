@@ -10,7 +10,7 @@ export const TaskUpdateCommandSchema = Joi.object({
   id: Joi.string().required(),
   content: Joi.string().required(),
   completed: Joi.boolean().optional(),
-  user_id: Joi.string().optional(),
+  user_id: Joi.string().allow(null).optional(),
 });
 
 export const TaskDeleteCommandSchema = Joi.object({
