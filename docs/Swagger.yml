@@ -1571,7 +1571,7 @@ components:
         status:
           type: string
         user:
-          $ref: '#/components/schemas/TaskUser'
+          $ref: '#/definitions/schemas/UserSummary'
         subtasks:
           type: array
           items:
