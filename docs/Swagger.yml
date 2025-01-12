@@ -169,6 +169,10 @@ paths:
                 $ref: '#/responses/schemas/success/Organization/Projects'
         '404':
           description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/responses/schemas/error/NotFound'
 
   /users/me:
     get:
@@ -681,7 +685,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/responses/schemas/error/NotFound'
-    put:
+    patch:
       tags:
         - Task
       summary: Update a task
@@ -1460,10 +1464,6 @@ definitions:
           type: array
           items:
             $ref: '#/definitions/schemas/OrganizationSummary'
-        projects:
-          type: array
-          items:
-            $ref: '#/definitions/schemas/ProjectSummary'
 
     UserSummary:
       type: object
