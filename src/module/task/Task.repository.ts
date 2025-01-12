@@ -6,7 +6,7 @@ import { TTask } from './Task.types';
 export default class TaskRepository implements IDataRepository<TTask> {
   _prisma: PrismaClient = new PrismaClient();
 
-  async create(data: TTask): Promise<TTask> {
+  async create(data: Omit<TTask, 'id'>): Promise<TTask> {
     const result = await this._prisma.task.create({
       data: {
         content: data.content,
