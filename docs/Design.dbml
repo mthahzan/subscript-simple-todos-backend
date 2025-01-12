@@ -1,0 +1,125 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table organisation {
+  id integer [primary key]
+  name varchar
+  unique_name varchar
+  owner_id integer [ref: - user.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table organisation_preference {
+  id integer [primary key]
+  organisation_id integer [ref: - organisation.id]
+  2fa_required bool
+  created_at timestamp
+  updated_at timestamp
+}
+
+enum user_role {
+  owner
+  admin
+  user
+}
+
+Table organisation_member {
+  id integer [primary key]
+  organisation_id integer [ref: > organisation.id]
+  user_id integer [ref: > user.id]
+  user_role user_role
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user {
+  id integer [primary key]
+  name varchar
+  avatar_uri varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+enum auth_type {
+  password [note: 'Using username-password']
+  sso [note: 'Using a SSO service']
+}
+
+enum auth_sso_provider {
+  google
+  facabook
+  github
+}
+
+Table user_auth {
+  id integer [primary key]
+  user_id integer [ref: > user.id]
+  auth_type auth_type
+  email varchar
+  password_hash varchar
+  sso_provider auth_sso_provider
+  remote_id varchar [note: 'Reference ID for remote resource']
+  2fa_enabled bool
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table project {
+  id integer [primary key]
+  organisation_id integer [ref: > organisation.id]
+  name varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table project_member {
+  id integer [primary key]
+  project_id integer [ref: > project.id]
+  user_id integer [ref: > user.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table project_preference {
+  id integer [primary key]
+  project_id integer [ref: - project.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table project_task_status {
+  id intefer [primary key]
+  project_id integer [ref: > project.id]
+  name varchar
+  completion_status bool [note: 'Whether this is a status of a completion state']
+  created_at timestamp
+  updated_at timestamp
+}
+
+enum task_type {
+  task
+  sub_task
+}
+
+Table task {
+  id integer [primary key]
+  project_id integer [ref: > project.id]
+  user_id integer [ref: > user.id]
+  parent_id integer [ref: > task.id]
+  type task_type
+  title varchar
+  description varchar
+  status_id integer [ref: > project_task_status.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table comment {
+  id integer [primary key]
+  task_id integer [ref: > task.id]
+  user_id integer [ref: > user.id]
+  content varchar
+  created_at timestamp
+  updated_at timestamp
+}
